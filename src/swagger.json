@@ -1,0 +1,334 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Solid concepts challenge",
+        "description": "A API made for consolidate knowledge in SOLID foundations",
+        "version": "1.0.0",
+        "contact": {
+            "name": "Marcelo Buongermino",
+            "email": "buon.marcelo@hotmail.com"
+        }
+    },
+    "paths": {
+        "/users": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create a user",
+                "description": "Create a new User",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "name": "User Name Sample",
+                                    "email": "user@example.com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created with success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "This email is already in use",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "error": "This email is already in use"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "List all users",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "user_id",
+                        "description": "Admin User ID for access",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],                
+                "responses": {
+                    "200": {
+                        "description": "List all users only if the user is admin",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: cannot list users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "error": "You need to be an administrator to list users"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "List a specific user by the ID required",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "description": "User ID",
+                        "required": true                        
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operation succeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "error": "User not found"
+                                    }
+                                }
+                            }
+                        }
+                    }                   
+                }
+                                
+            }
+        },
+        "users/{user_id}/admin": {
+            "patch": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Turn an user admin",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "description": "user_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operation succeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "id": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "admin": {
+                                            "type": "boolean"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "created_at": {
+                                            "type": "string"
+                                        },
+                                        "updated_at": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "name": "Marcelo Buongermino",
+                                        "id": "7f099ba8-4785-47e4-ae1c-e13fe9d73355",
+                                        "admin": true,
+                                        "email": "buon@hot.com",
+                                        "created_at": "2022-05-24T21:09:56.939Z",
+                                        "updated_at": "2022-05-24T21:10:15.013Z"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "error": "User not found"
+                                    }
+                                }
+                            }
+                        }
+                    }                   
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "admin": {
+                        "type": "boolean"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "name": "Marcelo Buongermino",
+                    "id": "7f099ba8-4785-47e4-ae1c-e13fe9d73355",
+                    "admin": false,
+                    "email": "buon@hot.com",
+                    "created_at": "2022-05-24T21:09:56.939Z",
+                    "updated_at": "2022-05-24T21:10:15.013Z"
+                }
+            },
+            "Users": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "admin": {
+                            "type": "boolean"
+                        },
+                        "email": {
+                            "type": "string",
+                            "format": "email"
+                        },
+                        "created_at": {
+                            "type": "string"
+                        },
+                        "updated_at": {
+                            "type": "string"
+                        }
+                    },
+                    "example": 
+                    [
+                        {
+                            "name": "Marcelo Buongermino",
+                            "id": "7f099ba8-4785-47e4-ae1c-e13fe9d73355",
+                            "admin": true,
+                            "email": "buon@hot.com",
+                            "created_at": "2022-05-24T21:09:56.939Z",
+                            "updated_at": "2022-05-24T21:10:15.013Z"
+                        },
+                        {
+                            "name": "Marcelo Buongermino",
+                            "id": "7f099ba8-4785-47e4-ae1c-e13fe9d73355",
+                            "admin": false,
+                            "email": "buon@hot.com",
+                            "created_at": "2022-05-24T21:09:56.939Z",
+                            "updated_at": "2022-05-24T21:10:15.013Z"
+                        }
+                    ]
+                }
+            }
+        }
+    }    
+}
